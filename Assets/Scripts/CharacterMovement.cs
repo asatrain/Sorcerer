@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Composites;
@@ -10,10 +11,16 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float speed;
     [SerializeField] private float inputSmoothTime;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float airControl;
+
+    private const float GroundedMaxAngle = 50;
 
     private Controls controls;
     private float movementInput;
     private float smoothingVelocity;
+    private bool jumpRequired;
+    private bool grounded;
 
     private void Awake()
     {
@@ -28,7 +35,10 @@ public class CharacterMovement : MonoBehaviour
 
     private void JumpOnPerformed(InputAction.CallbackContext obj)
     {
-        throw new NotImplementedException();
+        if (grounded)
+        {
+            jumpRequired = true;
+        }
     }
 
     private void FixedUpdate()
@@ -42,7 +52,21 @@ public class CharacterMovement : MonoBehaviour
         }
 
         movementInput = Mathf.SmoothDamp(movementInput, moveValue, ref smoothingVelocity, inputSmoothTime);
-        rb.velocity = new Vector2(movementInput * speed, rb.velocity.y);
+        var horizontalVelocity = movementInput * speed;
+        rb.velocity = new Vector2(horizontalVelocity, rb.velocity.y);
+
+        if (jumpRequired && grounded)
+        {
+            rb.AddForce(Vector2.up * jumpForce);
+            jumpRequired = false;
+        }
+        
+        grounded = false;
+    }
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        grounded = other.contacts.Any(contact => Vector2.Angle(contact.normal, Vector2.up) <= GroundedMaxAngle);
     }
 
     private void OnEnable()

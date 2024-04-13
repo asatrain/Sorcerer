@@ -118,7 +118,7 @@ Transform:
   - {fileID: 5389828001003943671}
   - {fileID: 4706573366795368052}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5392894397106996969
 MonoBehaviour:
@@ -135,6 +135,8 @@ MonoBehaviour:
   rb: {fileID: 2456699966144728841}
   speed: 8
   inputSmoothTime: 0.1
+  jumpForce: 1250
+  airControl: 0
 --- !u!70 &484093882915447050
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -185,8 +187,8 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_GravityScale: 8
+  m_Material: {fileID: 6200000, guid: 6bb49a53e6dd20f4d82f216f5972ad09, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -194,8 +196,8 @@ Rigidbody2D:
     serializedVersion: 2
     m_Bits: 0
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!1 &8305446940541849091
 GameObject:
