@@ -428,11 +428,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3647894738050099513, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.88
+      value: 3.99
       objectReference: {fileID: 0}
     - target: {fileID: 3647894738050099513, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.43
+      value: -0.35
       objectReference: {fileID: 0}
     - target: {fileID: 3647894738050099513, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -466,6 +466,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4526120513895036158, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
+      propertyPath: connectedVertices.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4526120513895036158, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
+      propertyPath: connectedVertices.Array.data[0]
+      value: 
+      objectReference: {fileID: 675238000}
     - target: {fileID: 7577316432392140326, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
       propertyPath: m_Name
       value: SignVertex (1)
@@ -802,11 +810,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3647894738050099513, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.79
+      value: -3.87
       objectReference: {fileID: 0}
     - target: {fileID: 3647894738050099513, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.97
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3647894738050099513, guid: 997843accfe7d504abeb2979b3bf5df8, type: 3}
       propertyPath: m_LocalPosition.z

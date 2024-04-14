@@ -137,6 +137,8 @@ MonoBehaviour:
   inputSmoothTime: 0.1
   jumpForce: 1250
   airControl: 0
+  jumpBufferTime: 0.2
+  jumpCoyoteTime: 0.2
 --- !u!70 &484093882915447050
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

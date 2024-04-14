@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Composites;
+using UnityEngine.Serialization;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -13,14 +14,23 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float inputSmoothTime;
     [SerializeField] private float jumpForce;
     [SerializeField] private float airControl;
+    [SerializeField] private float jumpBufferTime;
+    [SerializeField] private float jumpCoyoteTime;
 
     private const float GroundedMaxAngle = 50;
+    private const int FramesToBeGrounded = 2;
 
     private Controls controls;
     private float movementInput;
     private float smoothingVelocity;
-    private bool jumpRequired;
-    private bool grounded;
+    private float jumpBufferTimeLeft = -1;
+    private float jumpCoyoteTimeLeft = -1;
+    private int framesToBeGroundedLeft = FramesToBeGrounded;
+    private bool groundedThisFrame;
+
+    private bool Grounded => framesToBeGroundedLeft <= 0;
+    private bool CanJump => Grounded || jumpCoyoteTimeLeft >= 0;
+    private bool RequiredJump => jumpBufferTimeLeft >= 0;
 
     private void Awake()
     {
@@ -35,14 +45,17 @@ public class CharacterMovement : MonoBehaviour
 
     private void JumpOnPerformed(InputAction.CallbackContext obj)
     {
-        if (grounded)
-        {
-            jumpRequired = true;
-        }
+        jumpBufferTimeLeft = jumpBufferTime;
     }
 
     private void FixedUpdate()
     {
+        framesToBeGroundedLeft = groundedThisFrame ? framesToBeGroundedLeft - 1 : FramesToBeGrounded;
+        if (Grounded)
+        {
+            jumpCoyoteTimeLeft = jumpCoyoteTime;
+        }
+        
         var moveValue = controls.Player.Move.ReadValue<float>();
         if (moveValue != 0)
         {
@@ -55,18 +68,27 @@ public class CharacterMovement : MonoBehaviour
         var horizontalVelocity = movementInput * speed;
         rb.velocity = new Vector2(horizontalVelocity, rb.velocity.y);
 
-        if (jumpRequired && grounded)
+        if (RequiredJump && CanJump)
         {
-            rb.AddForce(Vector2.up * jumpForce);
-            jumpRequired = false;
+            Jump();
         }
         
-        grounded = false;
+        jumpBufferTimeLeft -= Time.fixedDeltaTime;
+        jumpCoyoteTimeLeft -= Time.fixedDeltaTime;
+        groundedThisFrame = false;
+    }
+
+    private void Jump()
+    {
+        rb.AddForce(Vector2.up * jumpForce);
+        jumpBufferTimeLeft = -1;
+        jumpCoyoteTimeLeft = -1;
+        framesToBeGroundedLeft = FramesToBeGrounded;
     }
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        grounded = other.contacts.Any(contact => Vector2.Angle(contact.normal, Vector2.up) <= GroundedMaxAngle);
+        groundedThisFrame = other.contacts.Any(contact => Vector2.Angle(contact.normal, Vector2.up) <= GroundedMaxAngle);
     }
 
     private void OnEnable()
