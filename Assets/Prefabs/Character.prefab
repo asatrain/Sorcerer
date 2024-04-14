@@ -133,10 +133,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 2456699966144728841}
-  speed: 8
-  inputSmoothTime: 0.1
+  speed: 7.5
+  inputSmoothTime: 0.05
   jumpForce: 1250
-  airControl: 0
+  airControl: 0.75
   jumpBufferTime: 0.2
   jumpCoyoteTime: 0.2
 --- !u!70 &484093882915447050

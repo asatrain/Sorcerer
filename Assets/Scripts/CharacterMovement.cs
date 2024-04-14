@@ -21,10 +21,13 @@ public class CharacterMovement : MonoBehaviour
     private const int FramesToBeGrounded = 2;
 
     private Controls controls;
+    private float moveValue;
     private float movementInput;
     private float smoothingVelocity;
     private float jumpBufferTimeLeft = -1;
     private float jumpCoyoteTimeLeft = -1;
+    private float jumpMoveValue;
+    private float jumpMovementInput;
     private int framesToBeGroundedLeft = FramesToBeGrounded;
     private bool groundedThisFrame;
 
@@ -50,21 +53,12 @@ public class CharacterMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        framesToBeGroundedLeft = groundedThisFrame ? framesToBeGroundedLeft - 1 : FramesToBeGrounded;
-        if (Grounded)
-        {
-            jumpCoyoteTimeLeft = jumpCoyoteTime;
-        }
-        
-        var moveValue = controls.Player.Move.ReadValue<float>();
-        if (moveValue != 0)
-        {
-            var scale = transform.localScale;
-            scale.x = moveValue;
-            transform.localScale = scale;
-        }
+        moveValue = controls.Player.Move.ReadValue<float>();
 
-        movementInput = Mathf.SmoothDamp(movementInput, moveValue, ref smoothingVelocity, inputSmoothTime);
+        ProcessGrounded();
+        ProcessFlip();
+        ProcessMovementInput();
+
         var horizontalVelocity = movementInput * speed;
         rb.velocity = new Vector2(horizontalVelocity, rb.velocity.y);
 
@@ -72,10 +66,58 @@ public class CharacterMovement : MonoBehaviour
         {
             Jump();
         }
-        
+
         jumpBufferTimeLeft -= Time.fixedDeltaTime;
         jumpCoyoteTimeLeft -= Time.fixedDeltaTime;
+    }
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        groundedThisFrame =
+            other.contacts.Any(contact => Vector2.Angle(contact.normal, Vector2.up) <= GroundedMaxAngle);
+    }
+
+    private void ProcessMovementInput()
+    {
+        if (Grounded)
+        {
+            movementInput = Mathf.SmoothDamp(movementInput, moveValue,
+                ref smoothingVelocity, inputSmoothTime);
+        }
+        else if (moveValue != 0 && airControl > 0)
+        {
+            movementInput = Mathf.SmoothDamp(movementInput, moveValue,
+                ref smoothingVelocity, inputSmoothTime / airControl);
+            if (jumpMoveValue > 0)
+            {
+                movementInput = Mathf.Min(movementInput, jumpMovementInput);
+            }
+            else if (jumpMoveValue < 0)
+            {
+                movementInput = Mathf.Max(movementInput, jumpMovementInput);
+            }
+        }
+    }
+
+    private void ProcessGrounded()
+    {
+        framesToBeGroundedLeft = groundedThisFrame ? framesToBeGroundedLeft - 1 : FramesToBeGrounded;
+        if (Grounded)
+        {
+            jumpCoyoteTimeLeft = jumpCoyoteTime;
+        }
+
         groundedThisFrame = false;
+    }
+
+    private void ProcessFlip()
+    {
+        if (moveValue != 0)
+        {
+            var scale = transform.localScale;
+            scale.x = moveValue;
+            transform.localScale = scale;
+        }
     }
 
     private void Jump()
@@ -83,12 +125,9 @@ public class CharacterMovement : MonoBehaviour
         rb.AddForce(Vector2.up * jumpForce);
         jumpBufferTimeLeft = -1;
         jumpCoyoteTimeLeft = -1;
+        jumpMoveValue = moveValue;
+        jumpMovementInput = movementInput;
         framesToBeGroundedLeft = FramesToBeGrounded;
-    }
-
-    private void OnCollisionStay2D(Collision2D other)
-    {
-        groundedThisFrame = other.contacts.Any(contact => Vector2.Angle(contact.normal, Vector2.up) <= GroundedMaxAngle);
     }
 
     private void OnEnable()
