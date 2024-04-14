@@ -29,10 +29,7 @@ public class SignVertex : MonoBehaviour
     {
         if (!GameManager.Instance.GameActive) return;
         
-        var material = timerSpriteRenderer.material;
-        material.SetFloat(ArcProperty, ((activeDuration - activeTimeLeft) / activeDuration) * 360);
-        timerSpriteRenderer.material = material;
-
+        UpdateTimer();
         activeTimeLeft -= Time.deltaTime;
     }
 
@@ -54,11 +51,26 @@ public class SignVertex : MonoBehaviour
         }
     }
 
+    private void UpdateTimer()
+    {
+        var material = timerSpriteRenderer.material;
+        material.SetFloat(ArcProperty, ((activeDuration - activeTimeLeft) / activeDuration) * 360);
+        timerSpriteRenderer.material = material;
+    }
+
     public void Trigger()
     {
         if (!GameManager.Instance.GameActive) return;
-        
-        activeTimeLeft = Active ? 0 : activeDuration;
+
+        if (Active)
+        {
+            activeTimeLeft = 0;
+        }
+        else
+        {
+            activeTimeLeft = activeDuration;
+            UpdateTimer();
+        }
     }
 
     public void Deactivate()

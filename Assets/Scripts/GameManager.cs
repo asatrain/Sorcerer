@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public delegate void GameOverHandler();
 
@@ -14,7 +15,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        if (signEdges.All(edge => edge.Active))
+        if (signEdges.Count > 0 && signEdges.All(edge => edge.Active))
         {
             GameActive = false;
             GameOver?.Invoke();
@@ -24,5 +25,10 @@ public class GameManager : Singleton<GameManager>
     public void RegisterEdge(SignEdge signEdge)
     {
         signEdges.Add(signEdge);
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

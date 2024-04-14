@@ -9,6 +9,14 @@ public class Character : MonoBehaviour
     private HashSet<Collider2D> enteredEdges = new();
     private HashSet<Collider2D> enteredVertices = new();
 
+    private void Update()
+    {
+        if (transform.position.y < 0)
+        {
+            GameManager.Instance.Restart();
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("SignVertex"))
