@@ -14,6 +14,7 @@ public class SignVertex : MonoBehaviour
     [SerializeField] private GameObject edge;
     [SerializeField] private SpriteRenderer timerSpriteRenderer;
     [SerializeField] private float activeDuration;
+    [SerializeField] private float gameOverHideDuration;
     private float activeTimeLeft;
 
     public bool Active => activeTimeLeft > 0;
@@ -21,10 +22,13 @@ public class SignVertex : MonoBehaviour
     private void Start()
     {
         InitEdges();
+        GameManager.Instance.GameOver += OnGameOver;
     }
 
     private void Update()
     {
+        if (!GameManager.Instance.GameActive) return;
+        
         var material = timerSpriteRenderer.material;
         material.SetFloat(ArcProperty, ((activeDuration - activeTimeLeft) / activeDuration) * 360);
         timerSpriteRenderer.material = material;
@@ -45,13 +49,37 @@ public class SignVertex : MonoBehaviour
         
             var edgeObject = Instantiate(edge);
             var signEdge = edgeObject.GetComponent<SignEdge>();
-            signEdge.Place(this, connectedVertex);
+            signEdge.Connect(this, connectedVertex);
             CreatedEdges.Add(edgeVertices);
         }
     }
 
     public void Trigger()
     {
+        if (!GameManager.Instance.GameActive) return;
+        
         activeTimeLeft = Active ? 0 : activeDuration;
+    }
+
+    public void Deactivate()
+    {
+        activeTimeLeft =  0;
+    }
+
+    private void OnGameOver()
+    {
+        StartCoroutine(HideTimer());
+    }
+
+    private IEnumerator HideTimer()
+    {
+        while (timerSpriteRenderer.color.a > 0)
+        {
+            var color = timerSpriteRenderer.color;
+            float smoothVelocity = 0;
+            color.a = Mathf.SmoothDamp(color.a, -0.01f, ref smoothVelocity, gameOverHideDuration);
+            timerSpriteRenderer.color = color;
+            yield return new WaitForEndOfFrame();
+        }
     }
 }

@@ -44,6 +44,8 @@ public class CharacterMovement : MonoBehaviour
     private void Start()
     {
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        
+        GameManager.Instance.GameOver += OnGameOver;
     }
 
     private void JumpOnPerformed(InputAction.CallbackContext obj)
@@ -112,12 +114,11 @@ public class CharacterMovement : MonoBehaviour
 
     private void ProcessFlip()
     {
-        if (moveValue != 0)
-        {
-            var scale = transform.localScale;
-            scale.x = moveValue;
-            transform.localScale = scale;
-        }
+        if (moveValue == 0) return;
+        
+        var scale = transform.localScale;
+        scale.x = moveValue;
+        transform.localScale = scale;
     }
 
     private void Jump()
@@ -128,6 +129,11 @@ public class CharacterMovement : MonoBehaviour
         jumpMoveValue = moveValue;
         jumpMovementInput = movementInput;
         framesToBeGroundedLeft = FramesToBeGrounded;
+    }
+
+    private void OnGameOver()
+    {
+        controls.Disable();
     }
 
     private void OnEnable()

@@ -131,6 +131,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   yScale: 0.5
+  spriteRenderer: {fileID: 4025049142848216800}
+  activeColor: {r: 0.69803923, g: 0.57254905, b: 0.23137255, a: 1}
+  inactiveColor: {r: 0.69803923, g: 0.57254905, b: 0.23137255, a: 0.25490198}
 --- !u!61 &1236572068398912555
 BoxCollider2D:
   m_ObjectHideFlags: 0
