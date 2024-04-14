@@ -29,4 +29,9 @@ public class SignVertex : MonoBehaviour
             CreatedEdges.Add(edgeVertices);
         }
     }
+
+    public void Trigger()
+    {
+        Debug.Log("Triggered vertex!");
+    }
 }

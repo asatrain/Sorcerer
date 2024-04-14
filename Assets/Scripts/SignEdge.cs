@@ -17,4 +17,9 @@ public class SignEdge : MonoBehaviour
         scale.y = yScale;
         transform.localScale = scale;
     }
+
+    public void Intersect()
+    {
+        Debug.Log("Intersected edge!");
+    }
 }
