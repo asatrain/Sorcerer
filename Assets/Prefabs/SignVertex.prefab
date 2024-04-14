@@ -301,6 +301,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   connectedVertices: []
   edge: {fileID: 4336615541919435847, guid: 849e7af622330744586881cea31f75ee, type: 3}
+  timerSpriteRenderer: {fileID: 8713435161369247377}
+  activeDuration: 5
 --- !u!58 &2913558841269448786
 CircleCollider2D:
   m_ObjectHideFlags: 0
