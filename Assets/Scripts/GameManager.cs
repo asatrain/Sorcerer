@@ -10,8 +10,16 @@ public delegate void GameOverHandler();
 public class GameManager : Singleton<GameManager>
 {
     private readonly List<SignEdge> signEdges = new();
+    private Controls controls;
     public bool GameActive { private set; get; } = true;
     public event GameOverHandler GameOver;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        controls = new Controls();
+        controls.Player.Restart.performed += _ => Restart();
+    }
 
     private void Update()
     {
@@ -30,5 +38,15 @@ public class GameManager : Singleton<GameManager>
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
     }
 }

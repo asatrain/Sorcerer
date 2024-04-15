@@ -2,12 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
     private HashSet<Collider2D> enteredEdges = new();
     private HashSet<Collider2D> enteredVertices = new();
+
+    [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private Transform endPoint;
+
+    private void Start()
+    {
+        GameManager.Instance.GameOver += OnGameOver;
+    }
 
     private void Update()
     {
@@ -48,5 +57,16 @@ public class Character : MonoBehaviour
         {
             enteredEdges.Remove(other);
         }
+    }
+
+    private void OnGameOver()
+    {
+        var framingTransposer = virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+        framingTransposer.m_XDamping = 5;
+        framingTransposer.m_YDamping = 5;
+        framingTransposer.m_DeadZoneWidth = 0;
+        framingTransposer.m_DeadZoneHeight = 0;
+        framingTransposer.m_TrackedObjectOffset = Vector3.zero;
+        virtualCamera.Follow = endPoint;
     }
 }
